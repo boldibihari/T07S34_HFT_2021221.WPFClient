@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NationalChampionship.API", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NationalChampionship", "NationalChampionship\NationalChampionship.csproj", "{E8E600DD-35A7-4E46-A5D9-660EA487E6E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFClient", "WPFClient\WPFClient.csproj", "{FD34BD24-3066-464D-95D6-9C612AE6DF50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NationalChampionship.WPFClient", "WPFClient\NationalChampionship.WPFClient.csproj", "{FD34BD24-3066-464D-95D6-9C612AE6DF50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

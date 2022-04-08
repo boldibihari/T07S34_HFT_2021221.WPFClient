@@ -4,9 +4,61 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFClient"
+        xmlns:vms="clr-namespace:NationalChampionship.WPFClient.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Background>
+        <ImageBrush ImageSource="Images/background.jpg"></ImageBrush>
+    </Window.Background>
+    <Window.DataContext>
+        <vms:MainWindowViewModel></vms:MainWindowViewModel>
+    </Window.DataContext>
     <Grid>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0" Grid.Row="0" Background="DarkOliveGreen">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Add club" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
+                <Button Content="Add manager" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
+                <Button Content="Add player" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
+            </StackPanel>
+        </Grid>
+        <ComboBox Name="clubs" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Clubs}" SelectedIndex="0" SelectedItem="{Binding SelectedClub}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <Label Content="{Binding ClubName}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <DataGrid Margin="5" ItemsSource="{Binding ElementName=clubs, Path=SelectedItem.Players}" Grid.Column="0" Grid.Row="1"></DataGrid>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Margin="5" Padding="5" DataContext="{Binding ElementName=clubs, Path=SelectedItem}" Grid.Row="0" Foreground="White" Background="OliveDrab">
+              <Run Text="{Binding ClubName}" FontWeight="Bold"/><LineBreak/>
+              <Run Text="{Binding ClubColour}"/><LineBreak/> 
+              <Run Text="{Binding ClubCity}"/><LineBreak/>
+              <Run Text="{Binding ClubFounded}"/><LineBreak/>
+              <Run Text="{Binding Stadium.StadiumName}"/>
+              <Run Text="{Binding Stadium.Capacity, StringFormat=({0})}"/>
+            </TextBlock>
+            <TextBlock Margin="5" Padding="5" DataContext="{Binding ElementName=clubs, Path=SelectedItem.Manager}" Grid.Row="1" Foreground="White" Background="OliveDrab">
+              <Run Text="{Binding ManagerName}" FontWeight="Bold"/><LineBreak/>
+              <Run Text="{Binding ManagerCountry}"/><LineBreak/>
+              <Run Text="{Binding ManagerBirthDate}"/><LineBreak/>
+              <Run Text="{Binding PreferredFormation}"/><LineBreak/>
+              <Run Text="{Binding ManagerStartYear}"/>
+              <Run Text="{Binding WonChampionship, StringFormat=({0})}"/>
+            </TextBlock>
+        </Grid>
     </Grid>
 </Window>

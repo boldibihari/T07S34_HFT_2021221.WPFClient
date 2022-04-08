@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\background.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+	<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Data\NationalChampionship.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\background.jpg" />
+  </ItemGroup>
+
+</Project>

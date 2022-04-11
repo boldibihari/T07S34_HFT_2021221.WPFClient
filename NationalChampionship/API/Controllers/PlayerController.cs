@@ -47,6 +47,12 @@ namespace NationalChampionship.API.Controllers
             return playerLogic.GetAllPlayerId().AsQueryable();
         }
 
+        [HttpGet("ClubSquad/{clubId}")]
+        public IEnumerable<Player> ClubSquad(int clubId)
+        {
+            return playerLogic.GetAllPlayer().Where(x => x.ClubId == clubId).AsQueryable();
+        }
+
         [HttpPost("{clubId}")]
         public void AddPlayerToClub(int clubId, [FromBody] Player player)
         {
@@ -54,11 +60,12 @@ namespace NationalChampionship.API.Controllers
             hub.Clients.All.SendAsync("PlayerCreated", player);
         }
 
-        [HttpDelete("{clubId}")]
+        [HttpDelete("{playerId}")]
         public void DeletePlayer(int playerId)
         {
+            var player = playerLogic.GetOnePlayer(playerId);
             playerLogic.DeletePlayer(playerId);
-            hub.Clients.All.SendAsync("PlayerDeleted", playerId);
+            hub.Clients.All.SendAsync("PlayerDeleted", player);
         }
 
         [HttpPut("{clubId}")]

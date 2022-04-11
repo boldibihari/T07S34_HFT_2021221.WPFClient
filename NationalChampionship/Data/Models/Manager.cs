@@ -24,7 +24,7 @@ namespace NationalChampionship.Data.Models
         [StringLength(100)]
         public string ManagerCountry { get; set; }
 
-        public DateTime ManagerBirthDate { get; set; }
+        public DateTime ManagerBirthdate { get; set; }
 
         public int ManagerStartYear { get; set; }
 

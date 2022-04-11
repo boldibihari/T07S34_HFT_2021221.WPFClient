@@ -43,8 +43,9 @@ namespace NationalChampionship.API.Controllers
         [HttpDelete("{clubId}")]
         public void DeleteClub(int clubId)
         {
+            var club = clubLogic.GetOneClub(clubId);
             clubLogic.DeleteClub(clubId);
-            hub.Clients.All.SendAsync("ClubDeleted", clubId);
+            hub.Clients.All.SendAsync("ClubDeleted", club);
         }
 
         [HttpPut("{clubId}")]

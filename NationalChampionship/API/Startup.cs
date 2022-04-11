@@ -120,7 +120,7 @@ namespace NationalChampionship.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<EventHub>("/events");
+                endpoints.MapHub<EventHub>("/hub");
             });
         }
     }

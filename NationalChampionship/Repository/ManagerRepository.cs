@@ -27,7 +27,7 @@ namespace NationalChampionship.Repository
                 oldManager.ManagerName = newManager.ManagerName;
                 oldManager.CountryCode = newManager.CountryCode;
                 oldManager.ManagerCountry = newManager.ManagerCountry;
-                oldManager.ManagerBirthDate = newManager.ManagerBirthDate;
+                oldManager.ManagerBirthdate = newManager.ManagerBirthdate;
                 oldManager.ManagerStartYear = newManager.ManagerStartYear;
                 oldManager.PreferredFormation = newManager.PreferredFormation;
                 oldManager.WonChampionship = newManager.WonChampionship;

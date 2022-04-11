@@ -45,8 +45,9 @@ namespace NationalChampionship.API.Controllers
         [HttpDelete("{managerId}")]
         public void DeleteManager(int managerId)
         {
+            var manager = managerLogic.GetOneManager(managerId);
             managerLogic.DeleteManager(managerId);
-            hub.Clients.All.SendAsync("ManagerDeleted", managerId);
+            hub.Clients.All.SendAsync("ManagerDeleted", manager);
         }
 
         [HttpPut("{managerId}")]

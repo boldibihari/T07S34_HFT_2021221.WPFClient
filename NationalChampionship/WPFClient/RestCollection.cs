@@ -153,6 +153,32 @@ namespace NationalChampionship.WPFClient
             return item;
         }
 
+        public async Task PostToAsync<T>(T item, int id, string endpoint)
+        {
+            HttpResponseMessage response =
+                await client.PostAsJsonAsync(endpoint + "/" + id.ToString(), item);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsAsync<RestExceptionInfo>();
+                throw new ArgumentException(error.Msg);
+            }
+            response.EnsureSuccessStatusCode();
+        }
+
+        public void PostTo<T>(T item, int id, string endpoint)
+        {
+            HttpResponseMessage response =
+                client.PostAsJsonAsync(endpoint + "/" + id.ToString(), item).GetAwaiter().GetResult();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = response.Content.ReadAsAsync<RestExceptionInfo>().GetAwaiter().GetResult();
+                throw new ArgumentException(error.Msg);
+            }
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task PostAsync<T>(T item, string endpoint)
         {
             HttpResponseMessage response =
@@ -189,6 +215,7 @@ namespace NationalChampionship.WPFClient
                 var error = await response.Content.ReadAsAsync<RestExceptionInfo>();
                 throw new ArgumentException(error.Msg);
             }
+
             response.EnsureSuccessStatusCode();
         }
 
@@ -202,32 +229,35 @@ namespace NationalChampionship.WPFClient
                 var error = response.Content.ReadAsAsync<RestExceptionInfo>().GetAwaiter().GetResult();
                 throw new ArgumentException(error.Msg);
             }
+
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task PutAsync<T>(T item, string endpoint)
+        public async Task PutAsync<T>(T item, int id, string endpoint)
         {
             HttpResponseMessage response =
-                await client.PutAsJsonAsync(endpoint, item);
+                await client.PutAsJsonAsync(endpoint + "/" + id.ToString(), item);
 
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsAsync<RestExceptionInfo>();
                 throw new ArgumentException(error.Msg);
             }
+
             response.EnsureSuccessStatusCode();
         }
 
-        public void Put<T>(T item, string endpoint)
+        public void Put<T>(T item, int id, string endpoint)
         {
             HttpResponseMessage response =
-                client.PutAsJsonAsync(endpoint, item).GetAwaiter().GetResult();
+                client.PutAsJsonAsync(endpoint + "/" + id.ToString(), item).GetAwaiter().GetResult();
 
             if (!response.IsSuccessStatusCode)
             {
                 var error = response.Content.ReadAsAsync<RestExceptionInfo>().GetAwaiter().GetResult();
                 throw new ArgumentException(error.Msg);
             }
+
             response.EnsureSuccessStatusCode();
         }
     }
@@ -240,29 +270,29 @@ namespace NationalChampionship.WPFClient
     }
     class NotifyService
     {
-        private HubConnection connection;
+        private HubConnection conn;
 
         public NotifyService(string url)
         {
-            connection = new HubConnectionBuilder()
+            conn = new HubConnectionBuilder()
                 .WithUrl(url)
                 .Build();
 
-            connection.Closed += async (error) =>
+            conn.Closed += async (error) =>
             {
                 await Task.Delay(new Random().Next(0, 5) * 1000);
-                await connection.StartAsync();
+                await conn.StartAsync();
             };
         }
 
         public void AddHandler<T>(string methodname, Action<T> value)
         {
-            connection.On<T>(methodname, value);
+            conn.On<T>(methodname, value);
         }
 
         public async void Init()
         {
-            await connection.StartAsync();
+            await conn.StartAsync();
         }
     }
 
@@ -300,12 +330,12 @@ namespace NationalChampionship.WPFClient
                     {
                         Init();
                     }
-
                 });
                 notify.AddHandler<T>(type.Name + "Updated", (T item) =>
                 {
                     Init();
                 });
+
                 notify.Init();
             }
             Init();
@@ -356,15 +386,36 @@ namespace NationalChampionship.WPFClient
             }
         }
 
-        public void Update(T item)
+        public void AddTo(T item, int id)
         {
             if (hasSignalR)
             {
-                rest.PutAsync(item, typeof(T).Name);
+                rest.PostToAsync(item, id, typeof(T).Name);
             }
             else
             {
-                rest.PutAsync(item, typeof(T).Name).ContinueWith((t) =>
+                rest.PostToAsync(item, id, typeof(T).Name).ContinueWith((t) =>
+                {
+                    Init().ContinueWith(z =>
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                        });
+                    });
+                });
+            }
+        }
+
+        public void Update(T item, int id)
+        {
+            if (hasSignalR)
+            {
+                rest.PutAsync(item, id, typeof(T).Name);
+            }
+            else
+            {
+                rest.PutAsync(item, id, typeof(T).Name).ContinueWith((t) =>
                 {
                     Init().ContinueWith(z =>
                     {

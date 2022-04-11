@@ -6,59 +6,311 @@
         xmlns:local="clr-namespace:WPFClient"
         xmlns:vms="clr-namespace:NationalChampionship.WPFClient.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Window.Background>
-        <ImageBrush ImageSource="Images/background.jpg"></ImageBrush>
-    </Window.Background>
+        Title="MainWindow" Height="450" Width="800" Background="DarkOliveGreen">
     <Window.DataContext>
         <vms:MainWindowViewModel></vms:MainWindowViewModel>
     </Window.DataContext>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="7*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid Grid.Column="0" Grid.Row="0" Background="DarkOliveGreen">
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Add club" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
-                <Button Content="Add manager" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
-                <Button Content="Add player" Padding="10" Width="100" Background="DarkOliveGreen" Foreground="White"></Button>
-            </StackPanel>
-        </Grid>
-        <ComboBox Name="clubs" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Clubs}" SelectedIndex="0" SelectedItem="{Binding SelectedClub}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Label Content="{Binding ClubName}"/>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <DataGrid Margin="5" ItemsSource="{Binding ElementName=clubs, Path=SelectedItem.Players}" Grid.Column="0" Grid.Row="1"></DataGrid>
-        <Grid Grid.Column="1" Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"></RowDefinition>
-                <RowDefinition Height="1*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock Margin="5" Padding="5" DataContext="{Binding ElementName=clubs, Path=SelectedItem}" Grid.Row="0" Foreground="White" Background="OliveDrab">
-              <Run Text="{Binding ClubName}" FontWeight="Bold"/><LineBreak/>
-              <Run Text="{Binding ClubColour}"/><LineBreak/> 
-              <Run Text="{Binding ClubCity}"/><LineBreak/>
-              <Run Text="{Binding ClubFounded}"/><LineBreak/>
-              <Run Text="{Binding Stadium.StadiumName}"/>
-              <Run Text="{Binding Stadium.Capacity, StringFormat=({0})}"/>
-            </TextBlock>
-            <TextBlock Margin="5" Padding="5" DataContext="{Binding ElementName=clubs, Path=SelectedItem.Manager}" Grid.Row="1" Foreground="White" Background="OliveDrab">
-              <Run Text="{Binding ManagerName}" FontWeight="Bold"/><LineBreak/>
-              <Run Text="{Binding ManagerCountry}"/><LineBreak/>
-              <Run Text="{Binding ManagerBirthDate}"/><LineBreak/>
-              <Run Text="{Binding PreferredFormation}"/><LineBreak/>
-              <Run Text="{Binding ManagerStartYear}"/>
-              <Run Text="{Binding WonChampionship, StringFormat=({0})}"/>
-            </TextBlock>
-        </Grid>
+        <TabControl>
+            <TabControl.Background>
+                <ImageBrush ImageSource="Images/background.jpg"></ImageBrush>
+            </TabControl.Background>
+            <TabItem Header="Clubs">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TabControl Grid.Column="0" Margin="10" Padding="10" Background="DarkOliveGreen">
+                        <TabItem Header="Players" Background="DarkOliveGreen">
+                            <DataGrid Margin="5" ItemsSource="{Binding SelectedClub.Players}" Grid.Column="0" Grid.Row="1"></DataGrid>
+                        </TabItem>
+                        <TabItem Header="Add" Background="DarkOliveGreen">
+                            <StackPanel>
+                                <Label Content="Name" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding NewClub.ClubName}" Margin="5"></TextBox>
+                                <Label Content="Colour" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding NewClub.ClubColour}" Margin="5"></TextBox>
+                                <Label Content="City" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding NewClub.ClubCity}" Margin="5"></TextBox>
+                                <Label Content="Founded" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding NewClub.ClubFounded}" Margin="5"></TextBox>
+                                <Button Content="Add" Foreground="White" FontWeight="Bold" Margin="0,40,0,0" Background="OliveDrab" Command="{Binding AddClubCommand}"></Button> 
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Update" Background="DarkOliveGreen">
+                            <StackPanel>
+                                <Label Content="Name" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding SelectedClub.ClubName}" Margin="5"></TextBox>
+                                <Label Content="Colour" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding SelectedClub.ClubColour}" Margin="5"></TextBox>
+                                <Label Content="City" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding SelectedClub.ClubCity}" Margin="5"></TextBox>
+                                <Label Content="Founded" Foreground="White" FontWeight="Bold"></Label>
+                                <TextBox Text="{Binding SelectedClub.ClubFounded}" Margin="5"></TextBox>
+                                <Button Content="Update" Foreground="White" FontWeight="Bold" Margin="0,40,0,0" Background="OliveDrab" Command="{Binding UpdateClubCommand}"></Button>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"></RowDefinition>
+                            <RowDefinition Height="7*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ComboBox Name="clubs" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Clubs}" SelectedIndex="0" SelectedItem="{Binding SelectedClub}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Content="{Binding ClubName}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"></RowDefinition>
+                                <RowDefinition Height="1*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="3*"></RowDefinition>
+                                    <RowDefinition Height="1*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Margin="5" Padding="5" DataContext="{Binding SelectedClub}" Grid.Row="0" Foreground="White" Background="OliveDrab">
+                                <Run Text="{Binding ClubName}" FontWeight="Bold"/><LineBreak/>
+                                <Run Text="{Binding ClubColour}"/><LineBreak/> 
+                                <Run Text="{Binding ClubCity}"/><LineBreak/>
+                                <Run Text="{Binding ClubFounded}"/><LineBreak/>
+                                <Run Text="{Binding Stadium.StadiumName}"/>
+                                <Run Text="{Binding Stadium.Capacity, StringFormat=({0})}"/><LineBreak/>
+                                </TextBlock>
+                                <StackPanel Grid.Row="1">
+                                    <Button Content="Delete" Command="{Binding DeleteClubCommand}" Margin="5" Background="DarkOliveGreen" Foreground="White" FontWeight="Bold"></Button>
+                                </StackPanel>
+                            </Grid>
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="3*"></RowDefinition>
+                                    <RowDefinition Height="1*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Margin="5" Padding="5" DataContext="{Binding SelectedClub.Manager}" Grid.Row="0" Foreground="White" Background="OliveDrab">
+                                <Run Text="{Binding ManagerName}" FontWeight="Bold"/><LineBreak/>
+                                <Run Text="{Binding ManagerCountry}"/><LineBreak/>
+                                <Run Text="{Binding ManagerBirthdate}"/><LineBreak/>
+                                <Run Text="{Binding PreferredFormation}"/><LineBreak/>
+                                <Run Text="{Binding ManagerStartYear}"/>
+                                <Run Text="{Binding WonChampionship, StringFormat=({0})}"/><LineBreak/>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Managers">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"></RowDefinition>
+                            <RowDefinition Height="1*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Margin="5" ItemsSource="{Binding Managers}" SelectedItem="{Binding SelectedManager}"></DataGrid>
+                        <StackPanel Grid.Row="1">
+                            <Button Content="Delete" Command="{Binding DeleteManagerCommand}" Margin="5,20,5,5" Background="DarkOliveGreen" Foreground="White" FontWeight="Bold"></Button>
+                        </StackPanel>
+                    </Grid>
+                    <TabControl Grid.Column="1" Margin="5" Padding="5" Foreground="White" Background="DarkOliveGreen">
+                        <TabItem Header="Add" Background="DarkOliveGreen">
+                            <StackPanel Background="OliveDrab">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Name:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewManager.ManagerName}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Country (code):" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewManager.ManagerCountry}" VerticalContentAlignment="Center" Margin="5" Width="100"></TextBox>
+                                    <TextBox Text="{Binding NewManager.CountryCode}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Birthdate:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewManager.ManagerBirthdate}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Start year:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewManager.ManagerStartYear}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Preffered formation:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewManager.PreferredFormation}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Club:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding Clubs}" Margin="5" SelectedIndex="0" SelectedItem="{Binding NewManager.Club}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding ClubName}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Won a championship:" Foreground="White" FontWeight="Bold"></Label>
+                                    <CheckBox IsChecked="{Binding NewManager.WonChampionship}" Margin="5"></CheckBox>
+                                </StackPanel>
+                                <Button Content="Add" Foreground="White" FontWeight="Bold" Background="DarkOliveGreen" Margin="5" Command="{Binding AddManagerCommand}"></Button>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Update" Background="DarkOliveGreen">
+                            <StackPanel Background="OliveDrab">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Name:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedManager.ManagerName}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Country (code):" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedManager.ManagerCountry}" VerticalContentAlignment="Center" Margin="5" Width="100"></TextBox>
+                                    <TextBox Text="{Binding SelectedManager.CountryCode}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Birthdate:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedManager.ManagerBirthdate}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Start year:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedManager.ManagerStartYear}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Preffered formation:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedManager.PreferredFormation}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Won a championship:" Foreground="White" FontWeight="Bold"></Label>
+                                    <CheckBox IsChecked="{Binding SelectedManager.WonChampionship}" Margin="5"></CheckBox>
+                                </StackPanel>
+                                <Button Content="Update" Foreground="White" FontWeight="Bold" Background="DarkOliveGreen" Margin="5" Command="{Binding UpdateManagerCommand}"></Button>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Players">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*"></RowDefinition>
+                            <RowDefinition Height="1*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Margin="5" ItemsSource="{Binding Players}" SelectedItem="{Binding SelectedPlayer}"></DataGrid>
+                        <StackPanel Grid.Row="1">
+                            <Button Content="Delete" Command="{Binding DeletePlayerCommand}" Margin="5,20,5,5" Background="DarkOliveGreen" Foreground="White" FontWeight="Bold"></Button>
+                        </StackPanel>
+                    </Grid>
+                    <TabControl Grid.Column="1" Margin="5" Padding="5" Foreground="White" Background="DarkOliveGreen">
+                        <TabItem Header="Add" Background="DarkOliveGreen">
+                            <StackPanel Background="OliveDrab">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Name:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewPlayer.PlayerName}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Grid.Column="0" Content="Country (code):" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Grid.Column="1" Text="{Binding NewPlayer.PlayerCountry}" VerticalContentAlignment="Center" Margin="5" Width="100"></TextBox>
+                                    <TextBox Text="{Binding NewPlayer.CountryCode}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Birthdate:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewPlayer.PlayerBirthdate}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Position:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding PlayerPositions}" Margin="5" SelectedIndex="0" SelectedItem="{Binding NewPlayer.PlayerPosition}"></ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Shirt number:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewPlayer.ShirtNumber}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Height:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewPlayer.Height}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Preferred foot:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding PreferredFeet}" Margin="5" SelectedIndex="0" SelectedItem="{Binding NewPlayer.PreferredFoot}"></ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Value:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding NewPlayer.PlayerValue}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Captain:" Foreground="White" FontWeight="Bold"></Label>
+                                    <CheckBox IsChecked="{Binding NewPlayer.Captain}" Margin="5"></CheckBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <Label Content="Club:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding Clubs}" Margin="5" SelectedIndex="0" SelectedItem="{Binding NewPlayer.Club}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Label Content="{Binding ClubName}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </StackPanel>
+                                <Button Content="Add" Foreground="White" FontWeight="Bold" Background="DarkOliveGreen" Margin="5" Command="{Binding AddPlayerCommand}"></Button>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Update" Background="DarkOliveGreen">
+                            <StackPanel Background="OliveDrab">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Name:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.PlayerName}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="County code:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.CountryCode}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Grid.Column="0" Content="Country:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Grid.Column="1" Text="{Binding SelectedPlayer.PlayerCountry}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Birthdate:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.PlayerBirthdate}" VerticalContentAlignment="Center" Margin="5" Width="150"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Position:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding PlayerPositions}" Margin="5" SelectedItem="{Binding SelectedPlayer.PlayerPosition}"></ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Shirt number:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.ShirtNumber}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Height:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.Height}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Preferred foot:" Foreground="White" FontWeight="Bold"></Label>
+                                    <ComboBox ItemsSource="{Binding PreferredFeet}" Margin="5" SelectedItem="{Binding SelectedPlayer.PreferredFoot}"></ComboBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Value:" Foreground="White" FontWeight="Bold"></Label>
+                                    <TextBox Text="{Binding SelectedPlayer.PlayerValue}" VerticalContentAlignment="Center" Margin="5" Width="50"></TextBox>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="Captain:" Foreground="White" FontWeight="Bold"></Label>
+                                    <CheckBox IsChecked="{Binding SelectedPlayer.Captain}" Margin="5"></CheckBox>
+                                </StackPanel>
+                                <Button Content="Update" Foreground="White" FontWeight="Bold" Background="DarkOliveGreen" Margin="5" Command="{Binding UpdatePlayerCommand}"></Button>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
